@@ -8,6 +8,18 @@ var usersRouter = require('./routes/users');
 const config = require('./config');
 
 var app = express();
+
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  } else {
+      console.log(`Redirecting to: https://${req.hostname}:${app.get('secPort')}${req.url}`);
+      res.redirect(301, `https://${req.hostname}:${app.get('secPort')}${req.url}`);
+  }
+});
+
+
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
